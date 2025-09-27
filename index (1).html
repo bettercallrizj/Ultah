@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Website</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #ffe6f2; margin: 0; padding: 20px; }
+    h1 { color: #d63384; }
+    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+    .photo { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+    .game { margin-top: 20px; }
+    button { margin: 5px; padding: 10px 20px; border: none; border-radius: 5px; background: #d63384; color: white; cursor: pointer; }
+    button:hover { background: #b52d6d; }
+    input, textarea { width: 100%; padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎂 Selamat Ulang Tahun 🎉</h1>
+    <img id="photoPreview" src="" alt="Foto" class="photo">
+    <p id="name">[Nama]</p>
+    <p id="age">Umur: [Umur]</p>
+    <p id="message">[Ucapan]</p>
+
+    <h3>Custom</h3>
+    <input type="file" id="photoInput" accept="image/*">
+    <input type="text" id="nameInput" placeholder="Nama">
+    <input type="number" id="ageInput" placeholder="Umur">
+    <textarea id="messageInput" placeholder="Ucapan"></textarea>
+    <button onclick="updateCard()">Update</button>
+
+    <div class="game">
+      <h3>Mini Game</h3>
+      <button onclick="blowCandle()">Tiup Lilin 🎂</button>
+      <button onclick="guessCard()">Tebak Kartu 🃏</button>
+      <button onclick="popBalloon()">Pencet Balon 🎈</button>
+      <p id="gameResult"></p>
+    </div>
+
+    <button onclick="saveLink()">Save & Copy Link 🔗</button>
+  </div>
+
+  <script>
+    function updateCard() {
+      document.getElementById("name").innerText = document.getElementById("nameInput").value;
+      document.getElementById("age").innerText = "Umur: " + document.getElementById("ageInput").value;
+      document.getElementById("message").innerText = document.getElementById("messageInput").value;
+      const file = document.getElementById("photoInput").files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("photoPreview").src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function blowCandle() {
+      document.getElementById("gameResult").innerText = "💨 Lilin berhasil ditiup!";
+    }
+
+    function guessCard() {
+      const cards = ["♥️", "♠️", "♦️", "♣️"];
+      const randomCard = cards[Math.floor(Math.random() * cards.length)];
+      document.getElementById("gameResult").innerText = "Kamu dapat kartu: " + randomCard;
+    }
+
+    function popBalloon() {
+      document.getElementById("gameResult").innerText = "🎈 Balon meletus!";
+    }
+
+    function saveLink() {
+      const name = document.getElementById("nameInput").value;
+      const age = document.getElementById("ageInput").value;
+      const message = document.getElementById("messageInput").value;
+      const url = window.location.origin + window.location.pathname +
+                  "?name=" + encodeURIComponent(name) +
+                  "&age=" + encodeURIComponent(age) +
+                  "&message=" + encodeURIComponent(message);
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link berhasil disalin: " + url);
+      });
+    }
+
+    function loadParams() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("name")) document.getElementById("name").innerText = params.get("name");
+      if (params.get("age")) document.getElementById("age").innerText = "Umur: " + params.get("age");
+      if (params.get("message")) document.getElementById("message").innerText = params.get("message");
+    }
+
+    loadParams();
+  </script>
+</body>
+</html>
